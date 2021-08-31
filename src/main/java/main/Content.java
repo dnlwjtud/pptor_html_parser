@@ -1,27 +1,15 @@
 package main;
 
+import lombok.Data;
+
 import java.util.List;
 
+@Data
 public class Content {
 
     private String code;
 
-    private List<String> contentText;
+    private List<String> contentTexts;
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public List<String> getContentText() {
-        return contentText;
-    }
-
-    public void setContentText(List<String> contentText) {
-        this.contentText = contentText;
-    }
 
 }

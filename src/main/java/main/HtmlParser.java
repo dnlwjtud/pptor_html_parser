@@ -18,16 +18,15 @@ public class HtmlParser {
      */
     public HtmlParser() {
 
-        // 상태코드 0으로 초기화
         this.status = 0;
-        // 리턴해줄 ArrayList를 생성
         this.result = new ArrayList<>();
-
-        // 코드를 한거번에 저장할 ArrayList 생성
         this.extractedCodes = new ArrayList<>();
 
     }
 
+    /*
+    결과물 리턴 메소드
+     */
     public List<Content> getParsedHtml(String html) {
 
         List<String> htmlLines = splitHTML(html);
@@ -49,7 +48,7 @@ public class HtmlParser {
         for (String htmlLine : html.trim().split("\n")) {
             htmlLines.add(htmlLine);
         }
-        
+
         // 스플릿 한 HTML을 리턴
         return htmlLines;
 
@@ -141,44 +140,98 @@ public class HtmlParser {
 
     }
 
+    /*
+    코드 추출 및 코드 태그 유효성 판별
+     */
     private String extractCode(String line) {
 
-        if ( !line.startsWith("<p>") ) {
-            line = "<p>" + line;
-        }
+        String lineText = removeHTMLTag(line);
 
-        if ( line.endsWith("<br>") ) {
-            String[] lineBits = line.split("<br>");
-            line = lineBits[0] + "</p>";
-        }
+        if ( lineText.startsWith("@S") || lineText.startsWith("@s") ) {
 
-        String[] lineBit = line.split("<p>");
+            lineText = lineText.toUpperCase();
 
-        String[] lineBitBits = lineBit[1].split("</p>");
+            String[] codeBits1 = lineText.split("@S");
 
-        if ( lineBitBits.length == 1 ) {
-            if ( lineBitBits[0].startsWith("@S") || lineBitBits[0].startsWith("@s") ) {
-                String arg = lineBitBits[0].trim().toUpperCase();
+            try {
 
-                String[] argBits = arg.split("@S");
+                Integer.parseInt(codeBits1[1].trim());
+                String[] codeBits2 = lineText.split("@");
 
-                try {
-                    Integer.parseInt(argBits[1].trim());
-                    String[] codeBits = arg.split("@");
+                return codeBits2[1];
 
-                    return codeBits[1];
-
-                } catch (NumberFormatException e ) {
-                    return line;
-                }
-
-            } else {
+            } catch (NumberFormatException e ) {
                 return line;
             }
         } else {
             return line;
         }
 
+    }
+
+    /*
+    태그 벗기기
+     */
+    public String removeHTMLTag(String line) {
+        // 정규표현식을 이용하여 HTML 태그 제거
+        return line.replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", "");
+    }
+    
+    /*
+    컨텐츠 체킹
+     */
+    public List<Content> checkContent(List<Content> slides) {
+
+        List<Content> checkedSlides = new ArrayList<>();
+
+        for ( Content slide : slides ) {
+
+            switch ( slide.getCode() ) {
+                case "S3" :
+                    break;
+                case "S4" :
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+
+        return checkedSlides;
+    }
+
+    /*
+    DIV 추가
+     */
+    public List<String> addDiv(List<String> contentTexts) {
+
+        List<String> result = new ArrayList<>();
+
+        for ( String contentText : contentTexts) {
+
+            if ( removeHTMLTag(contentText).startsWith("= ") ) {
+
+                String openTag = "<div>";
+                String closeTag = "</div>";
+
+                contentText = "<p>" + removeHTMLTag(contentText) + "</p>";
+
+                result.add(closeTag);
+                result.add(openTag);
+                result.add(contentText);
+
+                continue;
+            }
+
+            result.add(contentText);
+
+        }
+
+        result.remove(0);
+        result.add(result.size(), "</div>");
+
+        return result;
     }
 
 }

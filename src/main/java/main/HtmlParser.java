@@ -33,6 +33,10 @@ public class HtmlParser {
 
         readHtmlLine(htmlLines);
 
+        System.out.println("== 컨텐츠 검사 시작 == ");
+        checkContent(this.result);
+        System.out.println("== 컨텐츠 검사 끝 == ");
+        
         return this.result;
     }
 
@@ -70,7 +74,7 @@ public class HtmlParser {
 
             for (String line : htmlLines) {
 
-                System.out.println("현재 읽고 있는 라인 : " + line);
+                //System.out.println("현재 읽고 있는 라인 : " + line);
 
                 // 시작코드 추출
                 if (line.trim().contains("@S") || line.trim().contains("@s")) {
@@ -79,24 +83,24 @@ public class HtmlParser {
                         // 인스턴스에 코드 세팅
                         this.extractedCodes.add(extractCode(line));
                         String lineCode = extractCode(line);
-                        System.out.println("코드를 성공적으로 추출하였습니다 : " + lineCode);
+                        //System.out.println("코드를 성공적으로 추출하였습니다 : " + lineCode);
 
                         // 닫는태그 추가
                         String close = "</section>";
                         contentTexts.add(close);
-                        System.out.println("닫는태그를 추가하였습니다." + close);
+                        //System.out.println("닫는태그를 추가하였습니다." + close);
 
                         // html 에 섹션에 코드 클래스 추가하여 배열에 추가
-                        line = "<section " + "id=" + '"' + lineCode + '"' + ">";
+                        line = "<section " + "class=" + '"' + lineCode + '"' + ">";
                         contentTexts.add(line);
-                        System.out.println("섹션으로 변환되었습니다 : " + line);
+                        //System.out.println("섹션으로 변환되었습니다 : " + line);
                         continue;
 
                     }
 
                 }
 
-                System.out.println("추가한 라인 : " +line);
+                //System.out.println("추가한 라인 : " +line);
                 contentTexts.add(line);
 
             }
@@ -188,15 +192,15 @@ public class HtmlParser {
 
             switch ( slide.getCode() ) {
                 case "S3" :
-                    break;
                 case "S4" :
+                    slide.setContentTexts(addDiv(slide.getContentTexts()));
                     break;
                 default:
+                    checkedSlides.add(slide);
                     break;
             }
 
         }
-
 
         return checkedSlides;
     }
@@ -206,30 +210,82 @@ public class HtmlParser {
      */
     public List<String> addDiv(List<String> contentTexts) {
 
+        System.out.println(" 체크 메서드 실행 !");
+
+        int count = 0;
+        String openTag = "<div>";
+        String closeTag = "</div>";
+
         List<String> result = new ArrayList<>();
 
         for ( String contentText : contentTexts) {
 
-            if ( removeHTMLTag(contentText).startsWith("= ") ) {
+            System.out.println("현재 검사중인 라인 : " + contentText);
+            System.out.println("현재 검사기 카운트 숫자 : " + count);
 
-                String openTag = "<div>";
-                String closeTag = "</div>";
+            if ( removeHTMLTag(contentText).startsWith("% ") || contentText.startsWith("% ") && count < 3 ) {
 
-                contentText = "<p>" + removeHTMLTag(contentText) + "</p>";
+                System.out.println("!! div 라인작업 필요 : " + contentText);
 
+                if ( count == 0 ) {
+                    result.add(openTag); // 시작 태그 더하기
+                    String context = removeHTMLTag(contentText).split("% ")[1].trim();
+
+                    //String context = contentText.split("% 0")[1].trim();
+                    contentText = "<p>" + context.trim() + "</p>";
+                    result.add(contentText);
+                    count++;
+                    System.out.println("현재 검사기 카운트 숫자 : " + count);
+                    continue;
+                }
+
+                if ( count == 1 ) {
+
+                    result.add(closeTag);
+                    result.add(openTag);
+                    String context = removeHTMLTag(contentText).split("% ")[1].trim();
+
+                    //String context = contentText.split("% 0")[1].trim();
+                    contentText = "<p>" + context.trim() + "</p>";
+                    result.add(contentText);
+                    count++;
+                    System.out.println("현재 검사기 카운트 숫자 : " + count);
+                    continue;
+                }
+
+                System.out.println("현재 검사기 카운트 숫자 : " + count);
+            }
+
+            if ( contentText.startsWith("%") && count < 3 ) {
+
+                if ( count == 0 ) {
+
+                    contentText = openTag;
+                    result.add(contentText.trim());
+                    count++;
+                    continue;
+                }
+
+                if ( count == 1 ) {
+
+                    contentText = openTag;
+                    result.add(closeTag);
+                    result.add(contentText.trim());
+                    count++;
+                    continue;
+                }
+
+            }
+
+            if ( contentText.equals("</section>") ) {
                 result.add(closeTag);
-                result.add(openTag);
                 result.add(contentText);
-
                 continue;
             }
 
             result.add(contentText);
 
         }
-
-        result.remove(0);
-        result.add(result.size(), "</div>");
 
         return result;
     }

@@ -7,54 +7,132 @@ public class main {
 
     public static void main(String[] args) {
 
-/*
-        String html1 = "<p>@S1</p>\n" +
+        String html1 = "<p>@S3</p>\n" +
                 "<h1>제목</h1>\n" +
-                "<p>부제목<br>\n" +
-                "@Sasdfa</p>\n" +
-                "<h1>슬라이드2</h1>\n" +
-                "<p>= 그리드 1<br>\n" +
-                "내용<br>\n" +
-                "내용<br>\n" +
-                "내용<br>\n" +
-                "= 그리드 2<br>\n" +
-                "내용<br>\n" +
-                "내용<br>\n" +
-                "내용</p>\n" +
-                "<p>asdf@S1</p>\n" +
-                "<h1>경우의 수2</h1>\n" +
+                "<p>부제<br>\n" +
+                "% 첫번째 div</p>\n" +
                 "<ul>\n" +
                 "<li>\n" +
-                "<p>이럴땐 어떻게나올까요?<br>\n" +
-                "@s2</p>\n" +
+                "<p>내용</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>두번째 내용</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>세번째 내용<br>\n" +
+                "% 두번째 div</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>내용</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>두번째 내용</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>세번째 내용<br>\n" +
+                "@S3</p>\n" +
                 "</li>\n" +
                 "</ul>\n" +
-                "<h1>바로이렇게</h1>\n" +
+                "<h1>제목</h1>\n" +
+                "<p>부제<br>\n" +
+                "% 첫번째 div</p>\n" +
                 "<ul>\n" +
                 "<li>\n" +
-                "<p>다음에는?</p>\n" +
+                "<p>내용</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>두번째 내용</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>세번째 내용<br>\n" +
+                "% 두번째 div</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>내용</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>두번째 내용</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>세번째 내용</p>\n" +
                 "</li>\n" +
                 "</ul>\n" +
-                "<p>@S1</p>\n" +
-                "<h1>이런경우는?</h1>\n" +
-                "<p>@S2</p>\n" +
-                "<h1>경우의수 3</h1>\n" +
-                "<p>@S1</p>\n" +
-                "<h1>이거는</h1>\n" +
-                "<p>@S2<br>\n" +
-                "어떻게나오지</p>\n" +
-                "<p>@S1<br>\n" +
-                "@S2<br>\n" +
-                "빈 객체 하나와 들어있는 객체하나</p>";
+                "<p>@S3</p>\n" +
+                "<h1>제목</h1>\n" +
+                "<p>부제<br>\n" +
+                "%<br>\n" +
+                "첫번째 div</p>\n" +
+                "<ul>\n" +
+                "<li>\n" +
+                "<p>내용</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>두번째 내용</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>세번째 내용<br>\n" +
+                "%<br>\n" +
+                "두번째 div<br>\n" +
+                "내용<br>\n" +
+                "두번째 내용<br>\n" +
+                "세번째 내용</p>\n" +
+                "</li>\n" +
+                "</ul>\n" +
+                "<p>@S3</p>\n" +
+                "<h1>제목</h1>\n" +
+                "<p>부제<br>\n" +
+                "%<br>\n" +
+                "첫번째 div</p>\n" +
+                "<ul>\n" +
+                "<li>\n" +
+                "<p>내용</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>두번째 내용</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>세번째 내용<br>\n" +
+                "%<br>\n" +
+                "두번째 div<br>\n" +
+                "내용<br>\n" +
+                "두번째 내용<br>\n" +
+                "세번째 내용</p>\n" +
+                "</li>\n" +
+                "</ul>";
+
+        String html2 = "<p>@S3<br>\n" +
+                "% 바로해보는<br>\n" +
+                "% 두번째해본</p>\n" +
+                "<p>@S4</p>\n" +
+                "<h1>S4코드는?</h1>\n" +
+                "<p>당연 노프라블럼?<br>\n" +
+                "% 테스트1<br>\n" +
+                "% 테스트2</p>\n" +
+                "<p>@S3</p>\n" +
+                "<h1>그럼 이건..?</h1>\n" +
+                "<p>붙여쓰면?</p>\n" +
+                "<p>%이렇게쓰면?<br>\n" +
+                "%그냥잘리나?</p>";
 
 
         HtmlParser parser = new HtmlParser();
 
-        System.out.println(parser.getParsedHtml(html1));
+        List<Content> parsedHtml = parser.getParsedHtml(html2);
 
+        for ( Content content : parsedHtml) {
 
+            System.out.println(" 객체 시작 ");
 
-*/
+            System.out.println(" 객체 코드 : " + content.getCode());
+
+            System.out.println( " 객체 컨텐츠 : ");
+            for ( String arg : content.getContentTexts() ) {
+                System.out.println(arg);
+            }
+
+            System.out.println(" 객체 끝 ");
+        }
+
 
     }
 

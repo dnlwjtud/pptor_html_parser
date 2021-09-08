@@ -190,6 +190,10 @@ public class HtmlParser {
 
         for ( Content slide : slides ) {
 
+            if ( !slide.getContentTexts().get(0).startsWith("<section")) {
+                return slides;
+            }
+
             switch ( slide.getCode() ) {
                 case "S3" :
                 case "S4" :
@@ -256,7 +260,7 @@ public class HtmlParser {
                 System.out.println("현재 검사기 카운트 숫자 : " + count);
             }
 
-            if ( contentText.startsWith("%") && count < 3 ) {
+            if ( contentText.startsWith("%") || removeHTMLTag(contentText).startsWith("%") && count < 3 ) {
 
                 if ( count == 0 ) {
 

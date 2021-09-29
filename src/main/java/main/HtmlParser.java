@@ -1,5 +1,8 @@
 package main;
 
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +39,12 @@ public class HtmlParser {
         System.out.println("== 컨텐츠 검사 시작 == ");
         checkContent(this.result);
         System.out.println("== 컨텐츠 검사 끝 == ");
-        
+
+        System.out.println(" == XSS 검사 시작 == ");
+        checkXSS(this.result);
+        System.out.println(" == XSS 검사 시작 == ");
+
+
         return this.result;
     }
 
@@ -180,9 +188,61 @@ public class HtmlParser {
         // 정규표현식을 이용하여 HTML 태그 제거
         return line.replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", "");
     }
-    
+
     /*
-    컨텐츠 체킹
+    컨텐츠 필터링
+    */
+    public List<Content> checkXSS(List<Content> slides) {
+
+        String originHTML = "";
+        String filteredHTML = "";
+        List<String> filteredContentTexts = new ArrayList<>();
+
+        // 비어있는 리스트 추가
+        List<Content> checkedSlides = new ArrayList<>();
+
+        // 필터 생성
+        Safelist safelist = Safelist.relaxed();
+        safelist.addTags("section")
+                .addTags("div")
+                .addAttributes("section", "class");
+
+        // 모든 객체 필터 시작
+        for (Content originSlide : slides) {
+
+            // 객체에서 컨텐츠 텍스트 뽑기
+            List<String> originSlideContentTexts = originSlide.getContentTexts();
+
+            // 검사전 하나의 스트링으로 병합
+            for (String originSlideContentText : originSlideContentTexts) {
+                // 원본 html
+                originHTML += originSlideContentText;
+            }
+
+            // 필터링
+            filteredHTML = Jsoup.clean(originHTML,safelist);
+
+            String[] splitFilteredHTML = filteredHTML.split("\n");
+
+            for (String arg : splitFilteredHTML) {
+                filteredContentTexts.add(arg);
+            }
+
+            originSlide.setContentTexts(filteredContentTexts);
+
+            checkedSlides.add(originSlide);
+
+            originHTML = "";
+            filteredHTML = "";
+            filteredContentTexts = new ArrayList<>();
+            
+        }
+
+        return checkedSlides;
+    }
+
+    /*
+    코드별 컨텐츠 체킹
      */
     public List<Content> checkContent(List<Content> slides) {
 

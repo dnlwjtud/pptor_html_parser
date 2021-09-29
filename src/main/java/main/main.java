@@ -1,164 +1,177 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
+
+import java.util.*;
 
 public class main {
 
     public static void main(String[] args) {
 
-        String html1 = "<p>@S3</p>\n" +
-                "<h1>제목</h1>\n" +
-                "<p>부제<br>\n" +
-                "% 첫번째 div</p>\n" +
+        String html = "<p>@S1</p>\n" +
+                "<h1>제목을 입력하여 주시기 바랍니다.</h1>\n" +
+                "<p>부제를 입력하여 주시기 바랍니다.<br>\n" +
+                "@S2</p>\n" +
+                "<h1>제목을 입력하여 주시기 바랍니다.</h1>\n" +
                 "<ul>\n" +
                 "<li>\n" +
-                "<p>내용</p>\n" +
-                "</li>\n" +
-                "<li>\n" +
-                "<p>두번째 내용</p>\n" +
-                "</li>\n" +
-                "<li>\n" +
-                "<p>세번째 내용<br>\n" +
-                "% 두번째 div</p>\n" +
-                "</li>\n" +
-                "<li>\n" +
-                "<p>내용</p>\n" +
-                "</li>\n" +
-                "<li>\n" +
-                "<p>두번째 내용</p>\n" +
-                "</li>\n" +
-                "<li>\n" +
-                "<p>세번째 내용<br>\n" +
-                "@S3</p>\n" +
+                "<p>내용을 입력하여 주시기 바랍니다.<br>\n" +
+                "@S3<br>\n" +
+                "%</p>\n" +
                 "</li>\n" +
                 "</ul>\n" +
-                "<h1>제목</h1>\n" +
-                "<p>부제<br>\n" +
-                "% 첫번째 div</p>\n" +
+                "<h2>왼쪽 그리드 제목</h2>\n" +
                 "<ul>\n" +
                 "<li>\n" +
-                "<p>내용</p>\n" +
-                "</li>\n" +
-                "<li>\n" +
-                "<p>두번째 내용</p>\n" +
-                "</li>\n" +
-                "<li>\n" +
-                "<p>세번째 내용<br>\n" +
-                "% 두번째 div</p>\n" +
-                "</li>\n" +
-                "<li>\n" +
-                "<p>내용</p>\n" +
-                "</li>\n" +
-                "<li>\n" +
-                "<p>두번째 내용</p>\n" +
-                "</li>\n" +
-                "<li>\n" +
-                "<p>세번째 내용</p>\n" +
+                "<p>내용을 입력하여 주시기 바랍니다.<br>\n" +
+                "%</p>\n" +
                 "</li>\n" +
                 "</ul>\n" +
-                "<p>@S3</p>\n" +
-                "<h1>제목</h1>\n" +
-                "<p>부제<br>\n" +
-                "%<br>\n" +
-                "첫번째 div</p>\n" +
+                "<h2>오른쪽 그리드 제목</h2>\n" +
                 "<ul>\n" +
                 "<li>\n" +
-                "<p>내용</p>\n" +
-                "</li>\n" +
-                "<li>\n" +
-                "<p>두번째 내용</p>\n" +
-                "</li>\n" +
-                "<li>\n" +
-                "<p>세번째 내용<br>\n" +
-                "%<br>\n" +
-                "두번째 div<br>\n" +
-                "내용<br>\n" +
-                "두번째 내용<br>\n" +
-                "세번째 내용</p>\n" +
+                "<p>내용을 입력하여 주시기 바랍니다.<br>\n" +
+                "@S4<br>\n" +
+                "%</p>\n" +
                 "</li>\n" +
                 "</ul>\n" +
-                "<p>@S3</p>\n" +
-                "<h1>제목</h1>\n" +
-                "<p>부제<br>\n" +
-                "%<br>\n" +
-                "첫번째 div</p>\n" +
+                "<h2>왼쪽 그리드 제목</h2>\n" +
                 "<ul>\n" +
                 "<li>\n" +
-                "<p>내용</p>\n" +
+                "<p>내용을 입력하여 주시기 바랍니다.<br>\n" +
+                "%</p>\n" +
                 "</li>\n" +
+                "</ul>\n" +
+                "<h2>오른쪽 그리드 제목</h2>\n" +
+                "<ul>\n" +
                 "<li>\n" +
-                "<p>두번째 내용</p>\n" +
+                "<p>내용을 입력하여 주시기 바랍니다.<br>\n" +
+                "@S5<br>\n" +
+                "![image](url을 여기에 붙혀넣어주세요)</p>\n" +
                 "</li>\n" +
+                "</ul>\n" +
+                "<h1>제목을 입력하여 주시기 바랍니다.</h1>\n" +
+                "<ul>\n" +
                 "<li>\n" +
-                "<p>세번째 내용<br>\n" +
-                "%<br>\n" +
-                "두번째 div<br>\n" +
-                "내용<br>\n" +
-                "두번째 내용<br>\n" +
-                "세번째 내용</p>\n" +
+                "<p>내용을 입력하여 주시기 바랍니다.<br>\n" +
+                "@S6<br>\n" +
+                "![image](url을 여기에 붙혀넣어주세요)</p>\n" +
+                "</li>\n" +
+                "</ul>\n" +
+                "<h1>제목을 입력하여 주시기 바랍니다.</h1>\n" +
+                "<ul>\n" +
+                "<li>\n" +
+                "<p>내용을 입력하여 주시기 바랍니다.</p>\n" +
                 "</li>\n" +
                 "</ul>";
 
         String html2 = "<p>@S1</p>\n" +
-                "<h1>표제</h1>\n" +
-                "<p>부제<br>\n" +
-                "@S2</p>\n" +
-                "<h1>표제</h1>\n" +
-                "<p>많은내용많은내용많은내용많은내용많은내용많은내용많은내용많은내용많은내용많은내용많은내용많은내용많은내용많은내용많은내용많은내용많은내용많은내용많은내용많은내용많은내용많은내용많은내용많은내용많은내용많은내용<br>\n" +
-                "@S3</p>\n" +
-                "<h1>표제</h1>\n" +
-                "<p>%</p>\n" +
-                "<h1>왼쪽제목</h1>\n" +
+                "<h1>제목을 입력하여 주시기 바랍니다.</h1>\n" +
+                "<p>부제를 입력하여 주시기 바랍니다.</p>\n" +
+                "<div><script>alert('h1');</script></div>\n" +
+                "<p>@S2</p>\n" +
+                "<h1>제목을 입력하여 주시기 바랍니다.</h1>\n" +
+                "<div><script>alert('h1');</script></div>\n" +
                 "<ul>\n" +
                 "<li>\n" +
-                "<p>내용1</p>\n" +
-                "</li>\n" +
-                "<li>\n" +
-                "<p>내용2</p>\n" +
-                "</li>\n" +
-                "<li>\n" +
-                "<p>내용3</p>\n" +
+                "<p>내용을 입력하여 주시기 바랍니다.</p>\n" +
                 "</li>\n" +
                 "</ul>\n" +
-                "<h1>오른쪽내용</h1>\n" +
+                "<p>@S3<br>\n" +
+                "%</p>\n" +
+                "<h2>왼쪽 그리드 제목</h2>\n" +
                 "<ul>\n" +
                 "<li>\n" +
-                "<p>내용1</p>\n" +
+                "<p>내용을 입력하여 주시기 바랍니다.<script>alert('h1');</script><br>\n" +
+                "%</p>\n" +
                 "</li>\n" +
+                "</ul>\n" +
+                "<h2>오른쪽 그리드 제목</h2>\n" +
+                "<ul>\n" +
                 "<li>\n" +
-                "<p>내용2</p>\n" +
+                "<p>내용을 입력하여 주시기 바랍니다.</p>\n" +
                 "</li>\n" +
+                "</ul>\n" +
+                "<p>@S4<br>\n" +
+                "%</p>\n" +
+                "<h2>왼쪽 그리드 제목</h2>\n" +
+                "<ul>\n" +
                 "<li>\n" +
-                "<p>내용3<br>\n" +
-                "@S5<br>\n" +
-                "이미지 태그만 먹힙니다<br>\n" +
-                "<img><br>\n" +
-                "@S6<br>\n" +
-                "이미지 태그만 먹힙니다<br>\n" +
-                "<img></p>\n" +
+                "<p>내용을 입력하여 주시기 바랍니다.<br>\n" +
+                "%</p>\n" +
+                "</li>\n" +
+                "</ul>\n" +
+                "<h2>오른쪽 그리드 제목 <script>alert('h1');</script></h2>\n" +
+                "<ul>\n" +
+                "<li>\n" +
+                "<p>내용을 입력하여 주시기 바랍니다.</p>\n" +
+                "</li>\n" +
+                "</ul>\n" +
+                "<p>@S5<br>\n" +
+                "![image](url을 여기에 붙혀넣어주세요)</p>\n" +
+                "<h1>제목을 입력하여 주시기 바랍니다.</h1>\n" +
+                "<ul>\n" +
+                "<li>\n" +
+                "<p>내용을 입력하여 주시기 바랍니다.</p>\n" +
                 "</li>\n" +
                 "</ul>";
+        /*
+        Safelist safelist = Safelist.relaxed();
+        safelist.addTags("section")
+                .addTags("div")
+                .addAttributes("section", "class");
+
+
+        HtmlParser parser = new HtmlParser();
+
+        List<Content> parsedHtml = parser.getParsedHtml(html);
+
+        String wholeContent = "";
+
+        String cleanHTML = "";
+
+        for (Content content : parsedHtml) {
+
+            List<String> contentTexts = content.getContentTexts();
+
+            for (String contentText : contentTexts) {
+                wholeContent += contentText;
+            }
+
+            System.out.println("1차 : " + wholeContent);
+
+            cleanHTML = Jsoup.clean(wholeContent, safelist);
+
+            System.out.println("2차 " + cleanHTML);
+
+        }
+
+         */
 
         HtmlParser parser = new HtmlParser();
 
         List<Content> parsedHtml = parser.getParsedHtml(html2);
 
-        for ( Content content : parsedHtml) {
+        System.out.println(" 파싱된 컨텐츠의 갯수 : " + parsedHtml.size());
 
-            System.out.println(" 객체 시작 ");
+        for (Content content : parsedHtml) {
+            System.out.println("===  검사 시작  ===");
 
-            System.out.println(" 객체 코드 : " + content.getCode());
+            System.out.println(" 현재 객체의 코드 :  " + content.getCode() );
 
-            System.out.println( " 객체 컨텐츠 : ");
-            for ( String arg : content.getContentTexts() ) {
-                System.out.println(arg);
-            }
+            System.out.println(" 현재 객체의 HTML : " + content.getContentTexts());
 
-            System.out.println(" 객체 끝 ");
+            System.out.println("===  검사  끝  ===");
         }
-
 
     }
 
 }
+
+
+
+
+
+
+

@@ -5,6 +5,8 @@ import org.jsoup.safety.Safelist;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HtmlParser {
 
@@ -36,13 +38,13 @@ public class HtmlParser {
 
         readHtmlLine(htmlLines);
 
-        System.out.println("== 컨텐츠 검사 시작 == ");
+        //System.out.println("== 컨텐츠 검사 시작 == ");
         checkContent(this.result);
-        System.out.println("== 컨텐츠 검사 끝 == ");
+        //System.out.println("== 컨텐츠 검사 끝 == ");
 
-        System.out.println(" == XSS 검사 시작 == ");
+        //System.out.println(" == XSS 검사 시작 == ");
         checkXSS(this.result);
-        System.out.println(" == XSS 검사 시작 == ");
+        //System.out.println(" == XSS 검사 시작 == ");
 
 
         return this.result;
@@ -71,7 +73,7 @@ public class HtmlParser {
      */
     private void readHtmlLine(List<String> htmlLines) {
 
-        System.out.println("=== 파싱 메소드 정상 구동 ====");
+        //System.out.println("=== 파싱 메소드 정상 구동 ====");
 
         while (this.status < 1) {
 
@@ -144,9 +146,9 @@ public class HtmlParser {
             }
 
             status = 1;
-            System.out.println("정상 파싱 완료!");
+            //System.out.println("정상 파싱 완료!");
 
-            System.out.println("=== 판독기 호출 성공, 로직 끝 ====");
+            //System.out.println("=== 판독기 호출 성공, 로직 끝 ====");
 
         }
 
@@ -205,7 +207,15 @@ public class HtmlParser {
         Safelist safelist = Safelist.relaxed();
         safelist.addTags("section")
                 .addTags("div")
+                .addTags("iframe")
+                .addTags("figure")
+                .addTags("figcaption")
+                .addTags("svg")
+                .addTags("use")
+                .addAttributes("use","xlink:href")
+                .addAttributes("iframe", "src")
                 .addAttributes("section", "class");
+
 
         // 모든 객체 필터 시작
         for (Content originSlide : slides) {
@@ -259,6 +269,11 @@ public class HtmlParser {
                 case "S4" :
                     slide.setContentTexts(addDiv(slide.getContentTexts()));
                     break;
+                case "S7" :
+                case "S8" :
+                    slide.setContentTexts(addDiv(slide.getContentTexts()));
+                    slide.setContentTexts(addEmbedItem(slide.getContentTexts()));
+                    break;
                 default:
                     checkedSlides.add(slide);
                     break;
@@ -268,6 +283,183 @@ public class HtmlParser {
 
         return checkedSlides;
     }
+
+    // 구분선 //
+    
+    /*
+    임베드 아이템 추가
+     */
+    private List<String> addEmbedItem(List<String> contentTexts) {
+
+        System.out.println(" ==  임베드 아이템 필터 추가 시작 == ");
+
+        List<String> result = new ArrayList<>();
+
+        String itemUrl = "";
+
+        for (String contentText : contentTexts) {
+
+            System.out.println(" 임베드 아이템 로직 현재 읽고 있는 라인 : " + contentText);
+
+            String pureContentText = removeHTMLTag(contentText);
+
+            // 임시
+            if ( !pureContentText.equals("") ) {
+                System.out.println(" 임베드 아이템 로직 현재 읽고 있는 라인의 텍스트 : " + pureContentText);    
+            }
+
+            if ( isValidEmbedCode(pureContentText) && !extractEmbedCode(pureContentText).equals("")) {
+
+                System.out.println(" 임베드 아이템 코드가 포함된 텍스트 검출 : " + pureContentText);
+
+                switch ( extractEmbedCode(pureContentText) ) {
+                    case "map":
+                        System.out.println("임베드 아이템 코드 = " + extractEmbedCode(pureContentText));
+                        itemUrl = extractUrl(pureContentText);
+                        contentText = makeEmbedItem("map", itemUrl);
+                        System.out.println("result add EMBED map : " + contentText);
+                        result.add(contentText);
+                        continue;
+                    case "youtube":
+                        System.out.println("임베드 아이템 코드 = " + extractEmbedCode(pureContentText));
+                        itemUrl = extractUrl(pureContentText);
+                        contentText = makeEmbedItem("youtube", itemUrl);
+                        System.out.println("result add EMBED youtube : " + contentText);
+                        result.add(contentText);
+                        continue;
+                    default:
+                        continue;
+                }
+
+            }
+
+            System.out.println(" result add : " + contentText);
+            result.add(contentText);
+
+        }
+
+        return result;
+    }
+
+    /*
+    ! 문법 유효성 검사
+     */
+    private boolean isValidEmbedCode(String text) {
+
+        System.out.println("올바른 임베드 코드인지 검사를 시작합니다.");
+        // !를 기준으로 텍스트를 분리
+        String[] splitText = text.split("!");
+
+        if ( splitText.length != 2 ) {
+            System.out.println("옳지 않은 형식입니다.");
+            return false;
+        }
+
+        // 지정한 코드일때는 true, 아닐때는 false
+        if ( splitText[1].startsWith("map") || splitText[1].startsWith("youtube") ) {
+            System.out.println("임베드 코드가 포함되어 있습니다");
+            return true;
+        } else {
+            System.out.println("임베드 코드가 포함되어 있지 않습니다");
+            return false;
+        }
+
+    }
+
+    /*
+    ! 문법 코드 추출
+     */
+    private String extractEmbedCode(String text) {
+
+        System.out.println("임베드 코드를 추출합니다.");
+        String[] splitText = text.split("!");
+
+        if ( splitText.length != 2 ) {
+            System.out.println("옳지 않은 형식입니다.");
+            return text;
+        }
+
+        if ( splitText[1].toLowerCase().startsWith("map") ) {
+            System.out.println("추출된 코드 map");
+            return "map";
+        } else if ( splitText[1].toLowerCase().startsWith("youtube") ) {
+            System.out.println( "추출된 코드 youtube");
+            return "youtube";
+        } else {
+            System.out.println("옳지 않은 형식입니다.");
+            return text;
+        }
+
+    }
+
+    /*
+    URL 추출
+     */
+    private String extractUrl(String text) {
+
+        System.out.println("url 을 추출합니다");
+
+        try {
+            String regex = "\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+            Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+            Matcher m = p.matcher(text);
+            if (m.find()) {
+                System.out.println("추출된 url : " + m.group());
+                return m.group();
+            }
+            System.out.println(" 걸린url 이 없습니다.");
+            return "";
+        } catch (Exception e) {
+            System.out.println("예외로 인하여 추출된 url 이 없습니다.");
+            return "";
+        }
+
+    }
+
+    /*
+    임베드 아이템 코드
+     */
+    private String makeEmbedItem(String code, String url) {
+
+        String item = "";
+
+        switch ( code ) {
+            case "map" :
+                item = "<figure>\n" +
+                        "<iframe width=\"670\" height=\"500\" id=\"gmap_canvas\" " +
+                        "src=\" " + url + "\" " +
+                        "frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\"></iframe>\n" +
+                        "<figcaption>\n" +
+                        "<a href=\"https://maps.google.com\" title=\"Google Maps\">\n" +
+                        "<svg class=\"fa-maps\">\n" +
+                        "<use xlink:href=\"#fa-maps\"></use>\n" +
+                        "</svg>\n" +
+                        "Google Maps\n" +
+                        "</a>\n" +
+                        "</figcaption>\n" +
+                        "</figure>";
+
+                System.out.println(" 생성된 아이템 : " + item);
+                return item;
+
+            case "youtube" :
+                item = "<iframe width=\"670\" height=\"500\" " +
+                        "src= \" " + url + "\" " +
+                        "title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
+
+                System.out.println(" 생성된 아이템 : " + item);
+                return item;
+
+            default:
+                System.out.println("생성된 아이템 : " + item);
+                return item;
+
+        }
+
+    }
+
+    // 구분선 //
+
 
     /*
     DIV 추가

@@ -116,42 +116,37 @@ public class main {
                 "<p>내용을 입력하여 주시기 바랍니다.</p>\n" +
                 "</li>\n" +
                 "</ul>";
-        /*
-        Safelist safelist = Safelist.relaxed();
-        safelist.addTags("section")
-                .addTags("div")
-                .addAttributes("section", "class");
 
-
-        HtmlParser parser = new HtmlParser();
-
-        List<Content> parsedHtml = parser.getParsedHtml(html);
-
-        String wholeContent = "";
-
-        String cleanHTML = "";
-
-        for (Content content : parsedHtml) {
-
-            List<String> contentTexts = content.getContentTexts();
-
-            for (String contentText : contentTexts) {
-                wholeContent += contentText;
-            }
-
-            System.out.println("1차 : " + wholeContent);
-
-            cleanHTML = Jsoup.clean(wholeContent, safelist);
-
-            System.out.println("2차 " + cleanHTML);
-
-        }
-
-         */
+        String html3 = "<p>@S7<br>\n" +
+                "!map(https://www.youtube.com/watch?v=7ly6SxwZNTY)<br>\n" +
+                "%</p>\n" +
+                "<ul>\n" +
+                "<li>\n" +
+                "<p>asdf</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>asdf</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>asdf<br>\n" +
+                "@S8<br>\n" +
+                "!youtube(https://www.youtube.com/watch?v=7ly6SxwZNTY)<br>\n" +
+                "%</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>asdf</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>asdf</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>asdf</p>\n" +
+                "</li>\n" +
+                "</ul>";
 
         HtmlParser parser = new HtmlParser();
 
-        List<Content> parsedHtml = parser.getParsedHtml(html2);
+        List<Content> parsedHtml = parser.getParsedHtml(html3);
 
         System.out.println(" 파싱된 컨텐츠의 갯수 : " + parsedHtml.size());
 

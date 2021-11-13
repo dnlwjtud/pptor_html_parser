@@ -144,9 +144,40 @@ public class main {
                 "</li>\n" +
                 "</ul>";
 
+        String html4 = "<p>@S7<br>\n" +
+                "!map(https://maps.google.com)<br>\n" +
+                "%</p>\n" +
+                "<ul>\n" +
+                "<li>\n" +
+                "<p>asdf</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>asdf</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>asdf<br>\n" +
+                "@S8<br>\n" +
+                "!youtube(https://www.youtube.com)<br>\n" +
+                "%</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>asdf</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>asdf</p>\n" +
+                "</li>\n" +
+                "<li>\n" +
+                "<p>asdf<br>\n" +
+                "@S9<br>\n" +
+                "<img src=\"https://picsum.photos/536/354\" alt=\"image\" /></p>\n" +
+                "</li>\n" +
+                "</ul>\n" +
+                "<h2>표제를 입력해주세요</h2>\n" +
+                "<p>내용을 입력해주세요</p>";
+
         HtmlParser parser = new HtmlParser();
 
-        List<Content> parsedHtml = parser.getParsedHtml(html3);
+        List<Content> parsedHtml = parser.getParsedHtml(html4);
 
         System.out.println(" 파싱된 컨텐츠의 갯수 : " + parsedHtml.size());
 

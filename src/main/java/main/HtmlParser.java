@@ -212,6 +212,8 @@ public class HtmlParser {
                 .addTags("figcaption")
                 .addTags("svg")
                 .addTags("use")
+                .addTags("span")
+                .addAttributes("span", "style")
                 .addAttributes("use","xlink:href")
                 .addAttributes("iframe", "src")
                 .addAttributes("section", "class");
@@ -274,6 +276,9 @@ public class HtmlParser {
                     slide.setContentTexts(addDiv(slide.getContentTexts()));
                     slide.setContentTexts(addEmbedItem(slide.getContentTexts()));
                     break;
+                case "S9" :
+                    slide.setContentTexts(convertSpan(slide.getContentTexts()));
+                    break;
                 default:
                     checkedSlides.add(slide);
                     break;
@@ -285,7 +290,45 @@ public class HtmlParser {
     }
 
     // 구분선 //
-    
+
+    /*
+    img 태그를 span태그로 변환
+     */
+    private List<String> convertSpan(List<String> contentTexts) {
+
+        List<String> result = new ArrayList<>();
+
+        String span = "";
+
+        for (String contentText : contentTexts) {
+
+            if ( contentText.startsWith("<img") ) {
+
+                String itemUrl = extractUrl(contentText);
+                System.out.println("추출된 이미지 URL : " + itemUrl);
+
+                span = "<span class=\"background anim\" " +
+                        "style=\"background-image:url('" +
+                        itemUrl +
+                        "')\">" +
+                        "</span>";
+
+                contentText = "";
+
+                result.add(contentText);
+                continue;
+
+            }
+
+            result.add(contentText);
+
+        }
+
+        result.add(1, span);
+
+        return result;
+    }
+
     /*
     임베드 아이템 추가
      */
@@ -317,6 +360,11 @@ public class HtmlParser {
                         System.out.println("임베드 아이템 코드 = " + extractEmbedCode(pureContentText));
                         itemUrl = extractUrl(pureContentText);
                         contentText = makeEmbedItem("map", itemUrl);
+
+                        if ( !itemUrl.contains("https://maps.google.com") ) {
+                            contentText = "";
+                        }
+
                         System.out.println("result add EMBED map : " + contentText);
                         result.add(contentText);
                         continue;
@@ -324,6 +372,11 @@ public class HtmlParser {
                         System.out.println("임베드 아이템 코드 = " + extractEmbedCode(pureContentText));
                         itemUrl = extractUrl(pureContentText);
                         contentText = makeEmbedItem("youtube", itemUrl);
+
+                        if ( !itemUrl.contains("https://www.youtube.com") ) {
+                            contentText = "";
+                        }
+
                         System.out.println("result add EMBED youtube : " + contentText);
                         result.add(contentText);
                         continue;

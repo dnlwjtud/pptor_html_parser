@@ -373,7 +373,7 @@ public class HtmlParser {
                         itemUrl = extractUrl(pureContentText);
                         contentText = makeEmbedItem("youtube", itemUrl);
 
-                        if ( !itemUrl.contains("https://www.youtube.com") ) {
+                        if ( !checkValidYoutubeUrl(itemUrl) ) {
                             contentText = "";
                         }
 
@@ -392,6 +392,23 @@ public class HtmlParser {
         }
 
         return result;
+    }
+
+    /*
+    유튜브 링크 검사 로직
+     */
+    private boolean checkValidYoutubeUrl(String url) {
+
+        return url.startsWith("https://www.youtube.com/watch?v=") ||
+                url.startsWith("https://www.youtube.com") ||
+                url.startsWith("http://www.youtube.com/watch?v=") ||
+                url.startsWith("http://www.youtube.com") ||
+                url.startsWith("www.youtube.com/watch?v=") ||
+                url.startsWith("youtube.com/watch?v=") ||
+                url.startsWith("https://youtu.be/") ||
+                url.startsWith("http://youtu.be/") ||
+                url.startsWith("youtu.be/");
+
     }
 
     /*

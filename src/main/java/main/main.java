@@ -222,7 +222,57 @@ public class main {
             System.out.println("===  검사  끝  ===");
         }
 
+        ArrayList<String> urls = new ArrayList<>();
+
+        urls.add("https://www.youtube.com/watch?v=outThisId");
+        urls.add("http://www.youtube.com/watch?v=outThisId");
+        urls.add("www.youtube.com/watch?v=outThisId");
+        urls.add("youtube.com/watch?v=outThisId");
+        urls.add("https://youtu.be/outThisId");
+        urls.add("http://youtu.be/outThisId");
+        urls.add("https://youtube.com/embed/outThisId");
+        urls.add("youtu.be/outThisId");
+
+        for (String url : urls) {
+
+            String s = convertEmbedYoutubeUrl(url);
+
+            System.out.println("유튜브 링크 변환 확인 : " + s);
+
+        }
+
+
+
     }
+    /*
+    유튜브 임베드 링크 치환 로직
+     */
+    public static String convertEmbedYoutubeUrl(String url) {
+
+        if ( url.startsWith("https://youtube.com/embed/") || url.startsWith("http://youtube.com/embed/") ) {
+            return url;
+        } else if ( url.contains("watch?v=") ) {
+
+            String[] splitUrl = url.split("watch\\?v=", 2);
+
+            String videoId = splitUrl[1];
+
+            return "https://youtube.com/embed/" + videoId;
+
+        } else if ( url.startsWith("https://youtu.be/") || url.startsWith("http://youtu.be/") || url.startsWith("youtu.be/") ) {
+
+            String[] splitUrl = url.split("be/", 2);
+
+            String videoId = splitUrl[1];
+
+            return "https://youtube.com/embed/" + videoId;
+
+        }
+
+        return "";
+    }
+
+
 
 }
 

@@ -176,7 +176,7 @@ public class main {
                 "<p>내용을 입력해주세요</p>";
 
         String html5 = "<p>@S7<br>\n" +
-                "!map(https://maps.google.com)<br>\n" +
+                "!map(https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25706.919801958655!2d127.36067803955085!3d36.35193750000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x35654be0a6fa05d9%3A0xb0fb5aa41310d05b!2z6rCk65-s66as7JWE67Cx7ZmU7KCQIO2DgOyehOyblOuTnOygkA!5e0!3m2!1sko!2skr!4v1637077295434!5m2!1sko!2skr)<br>\n" +
                 "%</p>\n" +
                 "<ul>\n" +
                 "<li>\n" +
@@ -188,7 +188,7 @@ public class main {
                 "<li>\n" +
                 "<p>내용을 입력하여 주시기 바랍니다.<br>\n" +
                 "@S8<br>\n" +
-                "!youtube(https://www.youtube.com)<br>\n" +
+                "!youtube(https://www.youtube.com/embed/wgbr7exUnzE)<br>\n" +
                 "%</p>\n" +
                 "</li>\n" +
                 "<li>\n" +
@@ -200,7 +200,7 @@ public class main {
                 "<li>\n" +
                 "<p>내용을 입력하여 주시기 바랍니다.<br>\n" +
                 "@S9<br>\n" +
-                "![image](url을 여기에 넣어주세요)</p>\n" +
+                "![image](https://picsum.photos/536/354)</p>\n" +
                 "</li>\n" +
                 "</ul>\n" +
                 "<h2>표제를 입력하여 주시기 바랍니다.</h2>\n" +

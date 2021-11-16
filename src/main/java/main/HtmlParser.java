@@ -361,7 +361,7 @@ public class HtmlParser {
                         itemUrl = extractUrl(pureContentText);
                         contentText = makeEmbedItem("map", itemUrl);
 
-                        if ( !itemUrl.contains("https://maps.google.com") ) {
+                        if ( !checkValidGoogleMapUrl(itemUrl) ) {
                             contentText = "";
                         }
 
@@ -412,13 +412,20 @@ public class HtmlParser {
     }
 
     /*
+    구글 맵 링크 검사 로직
+     */
+    private boolean checkValidGoogleMapUrl(String url) {
+        return url.startsWith("https://www.google.com/maps");
+    }
+
+    /*
     ! 문법 유효성 검사
      */
     private boolean isValidEmbedCode(String text) {
 
         System.out.println("올바른 임베드 코드인지 검사를 시작합니다.");
         // !를 기준으로 텍스트를 분리
-        String[] splitText = text.split("!");
+        String[] splitText = text.split("!", 2);
 
         if ( splitText.length != 2 ) {
             System.out.println("옳지 않은 형식입니다.");
@@ -442,10 +449,11 @@ public class HtmlParser {
     private String extractEmbedCode(String text) {
 
         System.out.println("임베드 코드를 추출합니다.");
-        String[] splitText = text.split("!");
+        String[] splitText = text.split("!", 2);
 
         if ( splitText.length != 2 ) {
             System.out.println("옳지 않은 형식입니다.");
+            System.out.println(splitText[1]);
             return text;
         }
 
